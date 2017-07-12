@@ -1,8 +1,24 @@
-window.onload = function() {
-    var ctx = new AudioContext();
-    var audio = document.getElementById('music');
-    var audioSrc = ctx.createMediaElementSource(audio);
+let audio = document.getElementById('music');
+let playback = document.querySelector('#playback');
+
+var ctx = new AudioContext();
+let MEDIA_NODE = new WeakMap();
+
+function init() {
+    
+    let audioSrc;
+
+    if (MEDIA_NODE.has(audio)) {
+        audioSrc = MEDIA_NODE.get(audio);
+    }
+    else {
+        audioSrc = ctx.createMediaElementSource(audio);
+        MEDIA_NODE.set(audio, audioSrc);
+    }
+
     var analyser = ctx.createAnalyser();
+
+    let content = audio.src;
 
     audioSrc.connect(analyser);
 
@@ -11,23 +27,13 @@ window.onload = function() {
     var canvas = document.getElementById('canvas');
     var layout = canvas.getContext('2d');
 
-    function getColor(i) {
-        let r = Math.floor(i / 3);
-        let g = Math.floor(i / 3);
-        let b = Math.floor(i / 3);
-        return `#ff${g}${b}`;
-    }
-
     layout.fillStyle = `rgba(0, 0, 0, .1)`;
 
     function renderFrame() {
         requestAnimationFrame(renderFrame);
+        if (audio.src != content) return;
         analyser.getByteFrequencyData(frequencyData);
         layout.fillRect(0, 0, 2048, 512);
-        let a = 1;
-        let r = 0;
-        let g = 0;
-        let b = 0;
         for (var i = 0; i < 1024; i++) {
             if (i % 2 != 0) continue;
             layout.clearRect(i + 1024, 256, 1, frequencyData[i]);
@@ -39,3 +45,39 @@ window.onload = function() {
     audio.play();
     renderFrame();
 }
+
+function changeBackground(e) {
+    document.body.style.background = `url(${URL.createObjectURL(document.getElementById('background-input').files[0])}) 50%`;
+}
+
+function changeTrack() {
+    let url = URL.createObjectURL(document.getElementById(`track-input`).files[0]);
+    audio.src = url;
+    document.getElementById(`playback`).src = url;
+    init();
+}
+
+document.getElementById(`background-input`).addEventListener(`change`, changeBackground, false);
+document.getElementById(`track-input`).addEventListener(`change`, changeTrack, false);
+
+let pause_toggle = false;
+
+let pause_button = document.querySelector(`.pause`);
+
+document.querySelector(`.pause`).addEventListener(`click`, () => {
+    if (pause_toggle) {
+        audio.play();
+        playback.play();
+        pause_button.style.background = `url(pause.png) 50% no-repeat`;
+        pause_button.style.backgroundSize = `50%`;
+    }
+    else {
+        audio.pause();
+        playback.pause();
+        pause_button.style.background = `url(play.png) 50% no-repeat`;
+        pause_button.style.backgroundSize = `50%`;
+    }
+    pause_toggle = !pause_toggle;
+});
+
+init();

@@ -8,8 +8,15 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <audio autoplay src="test.mp3"></audio>
-    <audio src="test.mp3" id="music"></audio>
+    <div class="controls">
+        <input type="file" id="track-input">
+        <label for="track-input" id="track-button"></label>
+        <div class="pause"></div>
+        <input type="file" id="background-input">
+        <label for="background-input" id="background-button"></label>
+    </div>
+    <audio id="playback" autoplay loop src="test.mp3"></audio>
+    <audio src="test.mp3" id="music" loop></audio>
     <canvas id="canvas" width="2048" height="512"></canvas>
     <script src="index.js"></script>
 </body>

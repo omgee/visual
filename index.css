@@ -1,3 +1,9 @@
+* {
+    outline: 0;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    user-select: none;
+}
 html, body {
     background: url(test.jpg) 50%;
     overflow: hidden;
@@ -6,4 +12,62 @@ html, body {
     align-content: center;
     height: 100%;
     margin: 0;
+}
+.controls {
+    position: absolute;
+    background-color: rgba(0, 0, 0, .5);
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 316px;
+    height: 116px;
+    display: flex;
+    opacity: 0;
+    transition: .3s;
+    padding: 8px;
+    border-radius: 8px;
+}
+.controls:hover {
+    opacity: 1;
+}
+.controls > * {
+    flex: 1;
+}
+.pause {
+    width: 100px;
+    height: 100px;
+    background: url(pause.png) 50% no-repeat;
+    background-size: 50%;
+    opacity: .3;
+    transition: opacity .3s;
+}
+.pause:hover {
+    opacity: .5;
+}
+#track-button {
+    width: 100px;
+    height: 100px;
+    background: url(track.png) 50% no-repeat;
+    background-size: 50%;
+    opacity: .3;
+    transition: opacity .3s;
+}
+#track-button:hover {
+    opacity: .5;
+}
+#background-button {
+    width: 100px;
+    height: 100px;
+    background: url(background.png) 50% no-repeat;
+    background-size: 50%;
+    opacity: .3;
+    transition: opacity .3s;
+}
+#background-button:hover {
+    opacity: .5;
+}
+input {
+    display: none;
 }
