@@ -1,0 +1,9 @@
+html, body {
+    background: url(test.jpg) 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+    margin: 0;
+}
