@@ -66,6 +66,7 @@ drop.addEventListener(`drop`, (e) => {
             if (item.type.indexOf(`audio`) != -1) {
                 audioFileArray.push(item);
                 let id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
+                document.querySelector(`.wrap`).innerHTML += `<div class="track">${item.name.slice(0, -4)}</div>`;
                 setAudioById(id);
             }
             if (item.type.indexOf(`image`) != -1) {
@@ -96,10 +97,13 @@ let track_name = document.querySelector(`#track-name`);
 
 function setAudioById(id) {
     currentAudio = id;
-    track_name.innerHTML = audioFileArray[id].name;
+    document.querySelector(`.wrap`).style.transform = `translateX(-${(100 * id) / audioFileArray.length}%)`;
     let url = URL.createObjectURL(audioFileArray[id]);
     audio.src = url;
     playback.src = url;
+    pause = false;
+    document.querySelector(`.pause`).style.background = `url(pause.svg) 50% no-repeat`;
+    document.querySelector(`.pause`).style.backgroundSize = `25%`;
     init();
 }
 
@@ -120,6 +124,25 @@ function right() {
     setAudioById(currentAudio);
 }
 
+let pause = false;
+
+function togglePause() {
+    if (!pause) {
+        audio.pause();
+        playback.pause();
+        document.querySelector(`.pause`).style.background = `url(play.svg) 50% no-repeat`;
+        document.querySelector(`.pause`).style.backgroundSize = `25%`;
+    }
+    else {
+        audio.play();
+        playback.play();
+        document.querySelector(`.pause`).style.background = `url(pause.svg) 50% no-repeat`;
+        document.querySelector(`.pause`).style.backgroundSize = `25%`;
+    }
+    pause = !pause;
+}
+
+document.querySelector(`.pause`).addEventListener(`click`, togglePause);
 document.querySelector(`.left`).addEventListener(`click`, left);
 document.querySelector(`.right`).addEventListener(`click`, right);
 
