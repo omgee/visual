@@ -66,7 +66,7 @@ drop.addEventListener(`drop`, (e) => {
         for (let item of dt) {
             if (item.type.indexOf(`audio`) != -1) {
                 audioFileArray.push(item);
-                id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
+                currentAudio = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
                 document.querySelector(`.wrap`).innerHTML += `<div onclick="setAudioByMenu(${indexMemory})" class="track">${item.name.slice(0, -4)}</div>`;
                 
                 indexMemory++;
@@ -74,9 +74,10 @@ drop.addEventListener(`drop`, (e) => {
             if (item.type.indexOf(`image`) != -1) {
                 imageFileArray.push(item);
                 setImageById(imageFileArray.length - 1);
+                return;
             }
         }
-        setAudioById(id);
+        setAudioById(currentAudio);
     }
 });
 
