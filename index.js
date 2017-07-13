@@ -60,18 +60,22 @@ drop.addEventListener(`drop`, (e) => {
     e.preventDefault();
     let dt = e.dataTransfer.files;
     if (dt) {
+        let index = 0;
+        let id;
         for (let item of dt) {
             if (item.type.indexOf(`audio`) != -1) {
                 audioFileArray.push(item);
-                let id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
-                document.querySelector(`.wrap`).innerHTML += `<div class="track">${item.name.slice(0, -4)}</div>`;
-                setAudioById(id);
+                id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
+                document.querySelector(`.wrap`).innerHTML += `<div onclick="setAudioByMenu(${index})" class="track">${item.name.slice(0, -4)}</div>`;
+                
+                index++;
             }
             if (item.type.indexOf(`image`) != -1) {
                 imageFileArray.push(item);
                 setImageById(imageFileArray.length - 1);
             }
         }
+        setAudioById(id);
     }
 });
 
@@ -125,7 +129,7 @@ function right() {
 let pause = false;
 
 function togglePause() {
-    if (!pause) {
+    if (pause) {
         audio.pause();
         playback.pause();
         document.querySelector(`.pause`).style.background = `url(play.svg) 50% no-repeat`;
@@ -144,7 +148,34 @@ document.querySelector(`.pause`).addEventListener(`click`, togglePause);
 document.querySelector(`.left`).addEventListener(`click`, left);
 document.querySelector(`.right`).addEventListener(`click`, right);
 
+window.addEventListener(`keydown`, (e) => {
+    if (e.keyCode === 37) left();
+    if (e.keyCode === 39) right();
+    if (e.keyCode === 32) togglePause();
+});
+
 let tracks = document.querySelector(`.tracks`);
 let wrap = document.querySelector(`.wrap`);
+
+let menu = true;
+
+function toggleMenu(id) {
+    if (menu) {
+        tracks.style.overflow = `auto`;
+        wrap.style.flexDirection = `column`;
+        wrap.style.transform = `translateX(0%)`;
+    }
+    else {
+        tracks.style.overflow = `hidden`;
+        wrap.style.flexDirection = `row`;
+    }
+    menu = !menu;
+}
+
+function setAudioByMenu(id) {
+    if (!menu) setAudioById(id);
+}
+
+wrap.addEventListener(`click`, toggleMenu);
 
 init();

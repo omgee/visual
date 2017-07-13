@@ -99,6 +99,9 @@ div {
 .wrap {
     transition: transform .3s;
 }
+*::-webkit-scrollbar {
+    width: 0 !important;
+}
 .author {
     color: rgba(255, 255, 255, .3);
     font-size: 1.2em;
