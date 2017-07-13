@@ -130,7 +130,7 @@ function right() {
 let pause = false;
 
 function togglePause() {
-    if (pause) {
+    if (!pause) {
         audio.pause();
         playback.pause();
         document.querySelector(`.pause`).style.background = `url(play.svg) 50% no-repeat`;
