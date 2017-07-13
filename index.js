@@ -4,6 +4,11 @@ let playback = document.querySelector('#playback');
 var ctx = new AudioContext();
 let MEDIA_NODE = new WeakMap();
 
+let audioFileArray = [];
+let imageFileArray = [];
+let currentAudio = 0;
+let currentImage = 0;
+
 function init() {
     
     let audioSrc;
@@ -46,38 +51,76 @@ function init() {
     renderFrame();
 }
 
-function changeBackground(e) {
-    document.body.style.background = `url(${URL.createObjectURL(document.getElementById('background-input').files[0])}) 50%`;
+audio.onended = () => {
+    right();
 }
 
-function changeTrack() {
-    let url = URL.createObjectURL(document.getElementById(`track-input`).files[0]);
+let drop = document.querySelector(`#drop`);
+
+drop.addEventListener(`drop`, (e) => {
+    e.preventDefault();
+    let dt = e.dataTransfer.files;
+    if (dt) {
+        for (let item of dt) {
+            console.log(item)
+            if (item.type.indexOf(`audio`) != -1) {
+                audioFileArray.push(item);
+                let id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
+                setAudioById(id);
+            }
+            if (item.type.indexOf(`image`) != -1) {
+                imageFileArray.push(item);
+                setImageById(imageFileArray.length - 1);
+            }
+        }
+    }
+});
+
+drop.addEventListener(`dragover`, (e) => {
+    e.preventDefault();
+});
+
+drop.onmousemove = (e) => {
+    if (e.clientX < drop.clientWidth - 11 && e.clientX > 11 && e.clientY < drop.clientHeight - 11 && e.clientY > 11) {
+        drop.classList.add(`visible`);
+    } else {
+        drop.classList.remove(`visible`);
+    }
+}
+
+drop.onmouseleave = () => {
+    drop.classList.remove(`visible`);
+}
+
+let track_name = document.querySelector(`#track-name`);
+
+function setAudioById(id) {
+    currentAudio = id;
+    track_name.innerHTML = audioFileArray[id].name;
+    let url = URL.createObjectURL(audioFileArray[id]);
     audio.src = url;
-    document.getElementById(`playback`).src = url;
+    playback.src = url;
     init();
 }
 
-document.getElementById(`background-input`).addEventListener(`change`, changeBackground, false);
-document.getElementById(`track-input`).addEventListener(`change`, changeTrack, false);
+function setImageById(id) {
+    let url = URL.createObjectURL(imageFileArray[id]);
+    document.body.style.background = `url(${url}) 50% no-repeat`;
+}
 
-let pause_toggle = false;
+function left() {
+    if (currentAudio == 0) currentAudio = audioFileArray.length - 1;
+    else currentAudio--;
+    setAudioById(currentAudio);
+}
 
-let pause_button = document.querySelector(`.pause`);
+function right() {
+    if (currentAudio == audioFileArray.length - 1) currentAudio = 0;
+    else currentAudio++;
+    setAudioById(currentAudio);
+}
 
-document.querySelector(`.pause`).addEventListener(`click`, () => {
-    if (pause_toggle) {
-        audio.play();
-        playback.play();
-        pause_button.style.background = `url(pause.png) 50% no-repeat`;
-        pause_button.style.backgroundSize = `50%`;
-    }
-    else {
-        audio.pause();
-        playback.pause();
-        pause_button.style.background = `url(play.png) 50% no-repeat`;
-        pause_button.style.backgroundSize = `50%`;
-    }
-    pause_toggle = !pause_toggle;
-});
+document.querySelector(`.left`).addEventListener(`click`, left);
+document.querySelector(`.right`).addEventListener(`click`, right);
 
 init();
