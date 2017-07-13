@@ -90,6 +90,11 @@ div {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
+    transition: opacity .3s;
+}
+.track:hover {
+    opacity: .7;
 }
 .wrap {
     transition: transform .3s;

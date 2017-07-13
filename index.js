@@ -41,10 +41,9 @@ function init() {
         layout.fillRect(0, 0, 2048, 512);
         for (var i = 0; i < 1024; i++) {
             if (i % 2 != 0) continue;
-            layout.clearRect(i + 1024, 256, 1, frequencyData[i]);
-            layout.clearRect(i + 1024, 256, 1, -frequencyData[i]);
-            layout.clearRect(1024 - i, 256, 1, frequencyData[i]);
-            layout.clearRect(1024 - i, 256, 1, -frequencyData[i]);
+            let data = frequencyData[i] * 2;
+            layout.clearRect(i + 1024, 256 - frequencyData[i], 1, data);
+            layout.clearRect(1024 - i, 256 - frequencyData[i], 1, data);
         }
     }
     audio.play();
@@ -62,7 +61,6 @@ drop.addEventListener(`drop`, (e) => {
     let dt = e.dataTransfer.files;
     if (dt) {
         for (let item of dt) {
-            console.log(item)
             if (item.type.indexOf(`audio`) != -1) {
                 audioFileArray.push(item);
                 let id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
@@ -145,5 +143,8 @@ function togglePause() {
 document.querySelector(`.pause`).addEventListener(`click`, togglePause);
 document.querySelector(`.left`).addEventListener(`click`, left);
 document.querySelector(`.right`).addEventListener(`click`, right);
+
+let tracks = document.querySelector(`.tracks`);
+let wrap = document.querySelector(`.wrap`);
 
 init();
