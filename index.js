@@ -56,19 +56,20 @@ audio.onended = () => {
 
 let drop = document.querySelector(`#drop`);
 
+let indexMemory = 0;
+
 drop.addEventListener(`drop`, (e) => {
     e.preventDefault();
     let dt = e.dataTransfer.files;
     if (dt) {
-        let index = 0;
         let id;
         for (let item of dt) {
             if (item.type.indexOf(`audio`) != -1) {
                 audioFileArray.push(item);
                 id = audioFileArray.length - dt.length - 1 >= 0 ? audioFileArray.length - dt.length : 0;
-                document.querySelector(`.wrap`).innerHTML += `<div onclick="setAudioByMenu(${index})" class="track">${item.name.slice(0, -4)}</div>`;
+                document.querySelector(`.wrap`).innerHTML += `<div onclick="setAudioByMenu(${indexMemory})" class="track">${item.name.slice(0, -4)}</div>`;
                 
-                index++;
+                indexMemory++;
             }
             if (item.type.indexOf(`image`) != -1) {
                 imageFileArray.push(item);
